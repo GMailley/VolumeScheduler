@@ -9,9 +9,9 @@ import android.content.Intent;
 import android.media.AudioManager;
 import android.support.v4.app.NotificationCompat;
 
-import com.yooshsoft.volumeschedule.R;
-import com.yooshsoft.volumeschedule.structures.ScheduleEvent;
-import com.yooshsoft.volumeschedule.structures.VolumeSettings;
+import com.yooshsoft.volumescheduler.R;
+import com.yooshsoft.volumescheduler.structures.ScheduleEvent;
+import com.yooshsoft.volumescheduler.structures.VolumeSettings;
 
 import java.util.Calendar;
 

@@ -15,9 +15,9 @@ import android.widget.Toast;
 
 import com.github.jjobes.slidedaytimepicker.SlideDayTimeListener;
 import com.github.jjobes.slidedaytimepicker.SlideDayTimePicker;
-import com.yooshsoft.volumeschedule.R;
-import com.yooshsoft.volumeschedule.structures.ScheduleEvent;
-import com.yooshsoft.volumeschedule.structures.VolumeSettings;
+import com.yooshsoft.volumescheduler.R;
+import com.yooshsoft.volumescheduler.structures.ScheduleEvent;
+import com.yooshsoft.volumescheduler.structures.VolumeSettings;
 
 import java.util.Calendar;
 

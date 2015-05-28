@@ -28,13 +28,12 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.yooshsoft.volumeschedule.R;
-import com.yooshsoft.volumeschedule.adapters.EventAdapter;
-import com.yooshsoft.volumeschedule.adapters.ScheduleAdapter;
-import com.yooshsoft.volumeschedule.sqlite.EventsContract;
-import com.yooshsoft.volumeschedule.sqlite.EventTableDbHelper;
-import com.yooshsoft.volumeschedule.structures.ScheduleEvent;
-import com.yooshsoft.volumeschedule.structures.VolumeSettings;
+import com.yooshsoft.volumescheduler.R;
+import com.yooshsoft.volumescheduler.adapters.EventAdapter;
+import com.yooshsoft.volumescheduler.sqlite.EventsContract;
+import com.yooshsoft.volumescheduler.sqlite.EventTableDbHelper;
+import com.yooshsoft.volumescheduler.structures.ScheduleEvent;
+import com.yooshsoft.volumescheduler.structures.VolumeSettings;
 
 import io.github.codefalling.recyclerviewswipedismiss.SwipeDismissRecyclerViewTouchListener;
 
@@ -205,35 +204,6 @@ public class ScheduleListActivity extends AppCompatActivity {
 		intent = new Intent(context, EndAlarmReceiver.class);
 		alarmIntent = PendingIntent.getBroadcast(context, event_id, intent, 0);
 		alarmMgr.cancel(alarmIntent);
-	}
-
-	@Override
-	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-		if (v.getId() == recyclerView.getId()) {
-			super.onCreateContextMenu(menu, v, menuInfo);
-			MenuInflater m = getMenuInflater();
-			m.inflate(R.menu.event_item, menu);
-		}
-	}
-
-	@Override
-	public boolean onContextItemSelected(MenuItem item) {
-		AdapterView.AdapterContextMenuInfo info;
-		int index;
-
-		info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-		index = info.position;
-
-		switch (item.getItemId()) {
-			case R.id.schedule_menu_edit:
-				menu_edit(index);
-				return true;
-			case R.id.schedule_menu_remove:
-				menu_remove(index);
-				return true;
-			default:
-				return super.onContextItemSelected(item);
-		}
 	}
 
 	protected void menu_edit(int index) {

@@ -7,8 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.yooshsoft.volumeschedule.R;
-import com.yooshsoft.volumeschedule.structures.ScheduleEvent;
+import com.yooshsoft.volumescheduler.R;
+import com.yooshsoft.volumescheduler.structures.ScheduleEvent;
 
 import java.util.List;
 

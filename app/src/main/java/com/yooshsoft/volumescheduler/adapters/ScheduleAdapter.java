@@ -11,9 +11,9 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import com.yooshsoft.volumeschedule.R;
-import com.yooshsoft.volumeschedule.structures.ScheduleEvent;
-import com.yooshsoft.volumeschedule.structures.VolumeSettings;
+import com.yooshsoft.volumescheduler.R;
+import com.yooshsoft.volumescheduler.structures.ScheduleEvent;
+import com.yooshsoft.volumescheduler.structures.VolumeSettings;
 
 public class ScheduleAdapter extends ArrayAdapter<ScheduleEvent> {
 	protected ArrayList<Object> data;

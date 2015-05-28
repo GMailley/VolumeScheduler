@@ -1,3 +1,44 @@
 <resources>
+
+    <!-- App Name -->
     <string name="app_name">Volume Scheduler</string>
+
+    <!-- VOLUME CONTROL PAGE -->
+    <!-- Title -->
+    <string name="volume_settings_title">Volume Controls</string>
+
+    <!-- Seek Titles -->
+    <string name="seek_ringtone">Ringtone</string>
+    <string name="seek_media">Media</string>
+    <string name="seek_notifications">Notifications</string>
+    <string name="seek_system">System</string>
+
+    <!-- Check Box Titles -->
+    <string name="check_silent">Silent Mode</string>
+
+    <!-- Time -->
+    <string name="between_times">to</string>
+    <string name="label_start">Start</string>
+    <string name="label_end">End</string>
+    <string name="default_start">Monday 9:00 AM</string>
+    <string name="default_end">Monday 5:00 PM</string>
+
+    <!-- Button Titles -->
+    <string name="button_set">Set</string>
+    <string name="button_cancel">Cancel</string>
+
+    <!-- SCHEDULE PAGE -->
+    <!-- Button Titles -->
+    <string name="add_sched">Add Event</string>
+
+    <!-- Item Menu Options -->
+    <string name="menu_edit">Edit</string>
+    <string name="menu_remove">Remove</string>
+
+    <!-- Other -->
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_schedule_cal">Schedule Calendar</string>
+
+    <string name="hello_world">Hello world!</string>
+
 </resources>

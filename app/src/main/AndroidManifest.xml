@@ -6,6 +6,19 @@
                  android:icon="@mipmap/ic_launcher"
                  android:theme="@style/AppTheme">
 
+        <activity android:name=".volumescheduler.ScheduleListActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity android:name=".volumescheduler.CreateEventActivity"></activity>
+
+        <receiver android:name=".volumescheduler.StartAlarmReceiver"></receiver>
+
+        <receiver android:name=".volumescheduler.EndAlarmReceiver"></receiver>
+
     </application>
 
 </manifest>

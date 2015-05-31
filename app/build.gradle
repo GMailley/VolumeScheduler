@@ -28,4 +28,6 @@ dependencies {
 
     compile project(':slideDayTimePicker')
     compile project(':recyclerViewSwipeDismiss')
+
+    compile 'com.tonicartos:superslim:0.4.+'
 }

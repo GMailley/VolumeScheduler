@@ -18,16 +18,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.ContextMenu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.AdapterView;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.tonicartos.superslim.LayoutManager;
 import com.yooshsoft.volumescheduler.R;
 import com.yooshsoft.volumescheduler.adapters.EventAdapter;
 import com.yooshsoft.volumescheduler.sqlite.EventsContract;
@@ -38,6 +34,9 @@ import com.yooshsoft.volumescheduler.structures.VolumeSettings;
 import io.github.codefalling.recyclerviewswipedismiss.SwipeDismissRecyclerViewTouchListener;
 
 public class ScheduleListActivity extends AppCompatActivity {
+	private static final String KEY_HEADER_POSITIONING = "key_header_mode";
+	private static final String KEY_MARGINS_FIXED = "key_margins_fixed";
+
 	public static int CREATE_EVENT_CODE = 1;
 
 	protected SQLiteDatabase dbwrite;
@@ -46,10 +45,7 @@ public class ScheduleListActivity extends AppCompatActivity {
 	protected RecyclerView recyclerView;
 	protected TextView addButton;
 
-	protected List<ScheduleEvent> events;
-
 	protected EventAdapter eventAdapter;
-	protected LinearLayoutManager linearLayout;
 
 	protected void onCreate(Bundle savedInstanceState) {
 		EventTableDbHelper mDbHelper;
@@ -76,12 +72,85 @@ public class ScheduleListActivity extends AppCompatActivity {
 
 		setAddListener();
 
-		this.events = new ArrayList<>();
+		init_recycler(savedInstanceState);
 
-		this.eventAdapter = new EventAdapter(this.events);
-		this.linearLayout = new LinearLayoutManager(getApplicationContext());
-		this.recyclerView.setAdapter(this.eventAdapter);
-		this.recyclerView.setLayoutManager(this.linearLayout);
+//		this.linearLayout = new LinearLayoutManager(getApplicationContext());
+//		this.recyclerView.setAdapter(this.eventAdapter);
+//		this.recyclerView.setLayoutManager(this.linearLayout);
+//
+//		recyclerView.setLayoutManager(new LayoutManager(getApplicationContext()));
+//		eventAdapter = new EventAdapter(this.getApplicationContext(), mHeaderDisplay);
+//		mAdapter.setMarginsFixed(mAreMarginsFixed);
+//		mAdapter.setHeaderDisplay(mHeaderDisplay);
+//		mViews.setAdapter(mAdapter);
+//
+//		this.eventAdapter = new EventAdapter(this.events);
+//		this.linearLayout = new LinearLayoutManager(getApplicationContext());
+//		this.recyclerView.setAdapter(this.eventAdapter);
+//		this.recyclerView.setLayoutManager(this.linearLayout);
+//
+//		recyclerView.setLayoutManager(new LayoutManager(getApplicationContext()));
+//		recyclerView.setAdapter(this.eventAdapter);
+
+//		SwipeDismissRecyclerViewTouchListener listener = new SwipeDismissRecyclerViewTouchListener.Builder(
+//			recyclerView,
+//			new SwipeDismissRecyclerViewTouchListener.DismissCallbacks() {
+//				@Override
+//				public boolean canDismiss(int position) {
+//					return true;
+//				}
+//
+//				@Override
+//				public void onDismiss(View view) {
+//					// Do what you want when dismiss
+//					int id = recyclerView.getChildPosition(view);
+//					menu_remove(id);
+//				}
+//			})
+//			.setIsVertical(false)
+//			.setItemTouchCallback(
+//				new SwipeDismissRecyclerViewTouchListener.OnItemTouchCallBack() {
+//					@Override
+//					public void onTouch(int index) {
+//						// Do what you want when item be touched
+//						menu_edit(index);
+//					}
+//				})
+//			.create();
+//		recyclerView.setOnTouchListener(listener);
+
+		select_events();
+
+		registerForContextMenu(recyclerView);
+	}
+
+	private void getViews() {
+		this.recyclerView = (RecyclerView) findViewById(R.id.list_sched);
+		this.addButton = (TextView) findViewById(R.id.list_add);
+	}
+
+	private void init_recycler(Bundle savedInstanceState) {
+		int mHeaderDisplay;
+		boolean mAreMarginsFixed;
+
+		if (savedInstanceState != null) {
+			mHeaderDisplay = savedInstanceState
+				.getInt(KEY_HEADER_POSITIONING,
+					getResources().getInteger(R.integer.default_header_display));
+			mAreMarginsFixed = savedInstanceState
+				.getBoolean(KEY_MARGINS_FIXED,
+					getResources().getBoolean(R.bool.default_margins_fixed));
+		} else {
+			mHeaderDisplay = getResources().getInteger(R.integer.default_header_display);
+			mAreMarginsFixed = getResources().getBoolean(R.bool.default_margins_fixed);
+		}
+
+		this.recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+
+		eventAdapter = new EventAdapter(getApplicationContext(), mHeaderDisplay);
+		eventAdapter.setMarginsFixed(mAreMarginsFixed);
+		eventAdapter.setHeaderDisplay(mHeaderDisplay);
+		recyclerView.setAdapter(eventAdapter);
 
 		SwipeDismissRecyclerViewTouchListener listener = new SwipeDismissRecyclerViewTouchListener.Builder(
 			recyclerView,
@@ -109,15 +178,6 @@ public class ScheduleListActivity extends AppCompatActivity {
 				})
 			.create();
 		recyclerView.setOnTouchListener(listener);
-
-		select_events();
-
-		registerForContextMenu(recyclerView);
-	}
-
-	private void getViews() {
-		this.recyclerView = (RecyclerView) findViewById(R.id.list_sched);
-		this.addButton = (TextView) findViewById(R.id.list_add);
 	}
 
 	private void setAddListener() {
@@ -154,8 +214,6 @@ public class ScheduleListActivity extends AppCompatActivity {
 				} else {
 					add_event(event);
 				}
-
-				this.eventAdapter.notifyDataSetChanged();
 			}
 		}
 	}
@@ -211,7 +269,7 @@ public class ScheduleListActivity extends AppCompatActivity {
 		ScheduleEvent event;
 
 		intent = new Intent(ScheduleListActivity.this, CreateEventActivity.class);
-		event = events.get(index);
+		event = eventAdapter.getEvent(index);
 
 		intent.putExtra(CreateEventActivity.IS_EDIT, true);
 		intent.putExtra(CreateEventActivity.EVENT, event);
@@ -220,15 +278,14 @@ public class ScheduleListActivity extends AppCompatActivity {
 	}
 
 	protected void menu_remove(int index) {
-		int id = this.events.get(index).getId();
-		if(!remove_event(id)) {
+		int id = this.eventAdapter.getEvent(index).getId();
+		if (!remove_event(id)) {
 			Toast toast = Toast.makeText(this.getApplicationContext(), "Failed to delete Event", Toast.LENGTH_SHORT);
 			toast.show();
 			return;
 		}
 
-		this.events.remove(index);
-		this.eventAdapter.notifyDataSetChanged();
+		this.eventAdapter.removeEvent(index);
 		cancelAlarm(id);
 	}
 
@@ -265,10 +322,8 @@ public class ScheduleListActivity extends AppCompatActivity {
 			int sys = c.getInt(6);
 			int ring_mode = c.getInt(7);
 
-			this.events.add(new ScheduleEvent(event_id, starttime, duration, ring, media, notif, sys, ring_mode));
+			this.eventAdapter.addEvent(new ScheduleEvent(event_id, starttime, duration, ring, media, notif, sys, ring_mode));
 		} while (c.moveToNext());
-
-		this.eventAdapter.notifyDataSetChanged();
 
 		c.close();
 	}
@@ -293,9 +348,7 @@ public class ScheduleListActivity extends AppCompatActivity {
 		if (id > 0) {
 			//successful insert
 			event.setId(id);
-			this.events.add(event);
-			Collections.sort(events);
-			this.eventAdapter.notifyDataSetChanged();
+			this.eventAdapter.addEvent(event);
 			scheduleAlarm(event);
 		} else {
 			//insert failed
@@ -303,8 +356,7 @@ public class ScheduleListActivity extends AppCompatActivity {
 		}
 	}
 
-	protected void edit_event(ScheduleEvent event)
-	{
+	protected void edit_event(ScheduleEvent event) {
 		ContentValues values;
 		String whereClause;
 		boolean success;
@@ -325,9 +377,9 @@ public class ScheduleListActivity extends AppCompatActivity {
 
 		success = dbwrite.updateWithOnConflict(EventsContract.EventColumns.TABLE_NAME, values, whereClause, null, SQLiteDatabase.CONFLICT_REPLACE) > 0;
 
-		if(success) {
+		if (success) {
 			Log.i("SUCCESS", "true");
-			this.events.clear();
+			eventAdapter.clearEvents();
 			select_events();
 			cancelAlarm(event.getId());
 			scheduleAlarm(event);
@@ -336,8 +388,7 @@ public class ScheduleListActivity extends AppCompatActivity {
 		}
 	}
 
-	protected boolean remove_event(int id)
-	{
+	protected boolean remove_event(int id) {
 		boolean success;
 		String where;
 

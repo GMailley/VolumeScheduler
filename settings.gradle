@@ -1,1 +1,1 @@
-include ':app', ':slideDayTimePicker', ':recyclerViewSwipeDismiss'
+include ':app', ':recyclerViewSwipeDismiss', ':slideDayTimePicker'

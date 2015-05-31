@@ -16,6 +16,7 @@ import android.widget.Toast;
 import com.github.jjobes.slidedaytimepicker.SlideDayTimeListener;
 import com.github.jjobes.slidedaytimepicker.SlideDayTimePicker;
 import com.yooshsoft.volumescheduler.R;
+import com.yooshsoft.volumescheduler.structures.EventTime;
 import com.yooshsoft.volumescheduler.structures.ScheduleEvent;
 import com.yooshsoft.volumescheduler.structures.VolumeSettings;
 
@@ -41,12 +42,8 @@ public class CreateEventActivity extends AppCompatActivity {
 	protected Button set;
 	protected Button cancel;
 
-	protected int input_startday = 2;
-	protected int input_starthour = 9;
-	protected int input_startmin = 0;
-	protected int input_endday = 2;
-	protected int input_endhour = 17;
-	protected int input_endmin = 0;
+	protected EventTime input_starttime;
+	protected EventTime input_endtime;
 	protected int event_id = 0;
 
 
@@ -54,11 +51,8 @@ public class CreateEventActivity extends AppCompatActivity {
 
 		@Override
 		public void onDayTimeSet(int day, int hour, int minute) {
-			setStartText(day, hour, minute);
-			input_startday = day;
-			input_starthour = hour;
-			input_startmin = minute;
-			Toast.makeText(getApplicationContext(), "" + day, Toast.LENGTH_SHORT).show();
+			input_starttime = new EventTime(day, hour, minute);
+			setStartText();
 		}
 
 		@Override
@@ -71,10 +65,8 @@ public class CreateEventActivity extends AppCompatActivity {
 
 		@Override
 		public void onDayTimeSet(int day, int hour, int minute) {
-			setEndText(day, hour, minute);
-			input_endday = day;
-			input_endhour = hour;
-			input_endmin = minute;
+			input_endtime = new EventTime(day, hour, minute);
+			setEndText();
 		}
 
 		@Override
@@ -112,8 +104,8 @@ public class CreateEventActivity extends AppCompatActivity {
 			add_init();
 		}
 
-		setStartText(this.input_startday, this.input_starthour, this.input_startmin);
-		setEndText(this.input_endday, this.input_endhour, this.input_endmin);
+		setStartText();
+		setEndText();
 	}
 
 	protected void seekBarUpdate(VolumeSettings vols) {
@@ -189,70 +181,12 @@ public class CreateEventActivity extends AppCompatActivity {
 		});
 	}
 
-	private void setStartText(int day, int hour, int min) {
-		String str;
-
-		str = daytostring(day) + " " + timetostring(hour, min);
-
-		buttonStart.setText(str);
+	private void setStartText() {
+		buttonStart.setText(input_starttime.toStringWithDay(false));
 	}
 
-	private void setEndText(int day, int hour, int min) {
-		String str;
-
-		str = daytostring(day) + " " + timetostring(hour, min);
-
-		buttonEnd.setText(str);
-	}
-
-	private String daytostring(int day) {
-		switch (day) {
-			case 1:
-				return "Sunday";
-			case 2:
-				return "Monday";
-			case 3:
-				return "Tuesday";
-			case 4:
-				return "Wednesday";
-			case 5:
-				return "Thursday";
-			case 6:
-				return "Friday";
-			case 7:
-				return "Saturday";
-		}
-
-		return null;
-	}
-
-	private String timetostring(int hour, int min) {
-		String str;
-		boolean pm;
-
-		str = "";
-		pm = false;
-
-		if (hour >= 12) {
-			hour -= 12;
-			pm = true;
-		}
-
-		str += hour + ":";
-
-		if (min >= 10) {
-			str += min + " ";
-		} else {
-			str += "0" + min + " ";
-		}
-
-		if (pm) {
-			str += "PM";
-		} else {
-			str += "AM";
-		}
-
-		return str;
+	private void setEndText() {
+		buttonEnd.setText(input_endtime.toStringWithDay(false));
 	}
 
 	private void add_init() {
@@ -260,18 +194,9 @@ public class CreateEventActivity extends AppCompatActivity {
 
 		c = Calendar.getInstance();
 
-		this.input_startday = c.get(Calendar.DAY_OF_WEEK);
-		this.input_starthour = c.get(Calendar.HOUR_OF_DAY);
-		this.input_startmin = c.get(Calendar.MINUTE) + 1;
+		this.input_starttime = new EventTime(c.get(Calendar.DAY_OF_WEEK), 9, 0);
 
-		this.input_endday = this.input_startday;
-		if(this.input_startmin + 20 < 60) {
-			this.input_endhour = this.input_starthour;
-			this.input_endmin = this.input_startmin + 20;
-		} else {
-			this.input_endhour = this.input_starthour + 1;
-			this.input_endmin = 20 - (60 - this.input_startmin);
-		}
+		this.input_endtime = new EventTime(c.get(Calendar.DAY_OF_WEEK), 17, 0);
 	}
 
 	private void edit_init() {
@@ -281,21 +206,24 @@ public class CreateEventActivity extends AppCompatActivity {
 
 		this.event_id = event.getId();
 
-		this.input_startday = event.getStartDay();
-		this.input_starthour = event.getStartHour();
-		this.input_startmin = event.getStartMin();
+		this.input_starttime = new EventTime(
+			event.getStartDay(),
+			event.getStartHour(),
+			event.getStartMin()
+		);
 
-		this.input_endday = event.getEndDay();
-		this.input_endhour = event.getEndHour();
-		this.input_endmin = event.getEndMin();
+		this.input_endtime = new EventTime(
+			event.getEndDay(),
+			event.getEndHour(),
+			event.getEndMin()
+		);
 
 		this.volumes = event.getVolumes();
 
 		seekBarUpdate(this.volumes);
 	}
 
-	public void submitEvent(View v)
-	{
+	public void submitEvent(View v) {
 		ScheduleEvent event;
 		int vol1, vol2, vol3, vol4;
 		boolean is_edit;
@@ -308,17 +236,17 @@ public class CreateEventActivity extends AppCompatActivity {
 		vol3 = this.notifSeek.getProgress();
 		vol4 = this.sysSeek.getProgress();
 
-		if(silentCheck.isChecked()) {
+		if (silentCheck.isChecked()) {
 			vol1 = -1;
 		}
 
 		event = new ScheduleEvent(
-			input_startday,
-			input_starthour,
-			input_startmin,
-			input_endday,
-			input_endhour,
-			input_endmin,
+			input_starttime.getDay(),
+			input_starttime.getHour(),
+			input_starttime.getMin(),
+			input_endtime.getDay(),
+			input_endtime.getHour(),
+			input_endtime.getMin(),
 			new VolumeSettings(
 				vol1,
 				vol2,
@@ -337,25 +265,22 @@ public class CreateEventActivity extends AppCompatActivity {
 		finish();
 	}
 
-	public void cancelEvent(View v)
-	{
+	public void cancelEvent(View v) {
 		setResult(RESULT_CANCELED, new Intent());
 		finish();
 	}
 
-	public void onCheckboxClicked(View view)
-	{
+	public void onCheckboxClicked(View view) {
 		boolean checked = ((CheckBox) view).isChecked();
 
-		switch(view.getId()) {
+		switch (view.getId()) {
 			case R.id.check_silent:
 				set_silent(checked);
 		}
 	}
 
-	private void set_silent(boolean checked)
-	{
-		if(checked) {
+	private void set_silent(boolean checked) {
+		if (checked) {
 			seekBarUpdate(new VolumeSettings(0, 0, 0, 0));
 			ringSeek.setEnabled(false);
 			mediaSeek.setEnabled(false);
@@ -370,24 +295,24 @@ public class CreateEventActivity extends AppCompatActivity {
 		}
 	}
 
-	public void showTimePickerStart(View v)
-	{
+	public void showTimePickerStart(View v) {
 		new SlideDayTimePicker.Builder(getSupportFragmentManager())
 			.setListener(startListener)
-			.setInitialDay(input_startday)
-			.setInitialHour(input_starthour)
-			.setInitialMinute(input_startmin)
+			.setInitialDay(input_starttime.getDay())
+			.setInitialHour(input_starttime.getHour())
+			.setInitialMinute(input_starttime.getMin())
+			.setIs24HourTime(false)
 			.build()
 			.show();
 	}
 
-	public void showTimePickerEnd(View v)
-	{
+	public void showTimePickerEnd(View v) {
 		new SlideDayTimePicker.Builder(getSupportFragmentManager())
 			.setListener(endListener)
-			.setInitialDay(input_endday)
-			.setInitialHour(input_endhour)
-			.setInitialMinute(input_endmin)
+			.setInitialDay(input_endtime.getDay())
+			.setInitialHour(input_endtime.getHour())
+			.setInitialMinute(input_endtime.getMin())
+			.setIs24HourTime(false)
 			.build()
 			.show();
 	}

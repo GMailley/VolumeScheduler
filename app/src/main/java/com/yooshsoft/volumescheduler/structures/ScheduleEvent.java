@@ -52,6 +52,11 @@ public class ScheduleEvent implements Comparable<ScheduleEvent>, Parcelable {
 	}
 
 	public int compareTo(@NonNull ScheduleEvent another) {
+		if(this.id == another.id)
+		{
+			return 0;
+		}
+
 		return this.starttime.compareTo(another.starttime);
 	}
 
@@ -64,7 +69,14 @@ public class ScheduleEvent implements Comparable<ScheduleEvent>, Parcelable {
 
 		sched = (ScheduleEvent) object;
 
-		return starttime.equals(sched.starttime) && this.getDuration() == sched.getDuration();
+		if(this.getId()!=-1 && this.getId()==sched.getId())
+		{
+			return true;
+		}
+		else
+		{
+			return starttime.equals(sched.starttime) && this.getDuration() == sched.getDuration();
+		}
 	}
 
 

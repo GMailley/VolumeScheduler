@@ -2,10 +2,11 @@ package com.yooshsoft.volumescheduler.sqlite;
 
 import android.provider.BaseColumns;
 
-public final class EventsContract {
+public final class EventContract
+{
 	// To prevent someone from accidentally instantiating the contract class,
 	// give it an empty constructor.
-	public EventsContract() {}
+	public EventContract() {}
 
 	/* Inner class that defines the table contents */
 	public static abstract class EventColumns implements BaseColumns {

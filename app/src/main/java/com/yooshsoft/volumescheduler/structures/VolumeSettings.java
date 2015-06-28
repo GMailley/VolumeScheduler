@@ -80,14 +80,14 @@ public class VolumeSettings implements Parcelable{
 	public String toString() {
 		String str;
 
-		int ring_percent = (int) (((float) this.getRingtone() / (float) MAX_VOLUMES.getRingtone()) * 100.0);
-		int media_percent = (int) (((float) this.getMedia() / (float) MAX_VOLUMES.getMedia()) * 100.0);
-		int notif_percent = (int) (((float) this.getNotifications() / (float) MAX_VOLUMES.getNotifications()) * 100.0);
-		int system_percent = (int) (((float) this.getSystem() / (float) MAX_VOLUMES.getSystem()) * 100.0);
+//		int ring_percent = (int) (((float) this.getRingtone() / (float) MAX_VOLUMES.getRingtone()) * 100.0);
+//		int media_percent = (int) (((float) this.getMedia() / (float) MAX_VOLUMES.getMedia()) * 100.0);
+//		int notif_percent = (int) (((float) this.getNotifications() / (float) MAX_VOLUMES.getNotifications()) * 100.0);
+//		int system_percent = (int) (((float) this.getSystem() / (float) MAX_VOLUMES.getSystem()) * 100.0);
+//
+//		str = "R " + ring_percent + "% M " + media_percent + "% N " + notif_percent + "% S " + system_percent + "%";
 
-		str = "R " + ring_percent + "% M " + media_percent + "% N " + notif_percent + "% S " + system_percent + "%";
-
-		return str;
+		return "R " + this.getRingtone() + "% M " + getMedia() + "% N " + getNotifications() + "% S " + getSystem() + "%";
 	}
 
 	public static void setMaxVolumes(int ring, int media, int notif, int sys, int vibrate) {
@@ -98,6 +98,26 @@ public class VolumeSettings implements Parcelable{
 //	{
 //		return MAX_VOLUMES;
 //	}
+
+	public static int getMaxRing()
+	{
+		return MAX_VOLUMES.getRingtone();
+	}
+
+	public static int getMaxMedia()
+	{
+		return MAX_VOLUMES.getMedia();
+	}
+
+	public static int getMaxNotifications()
+	{
+		return MAX_VOLUMES.getNotifications();
+	}
+
+	public static int getMaxSystem()
+	{
+		return MAX_VOLUMES.getSystem();
+	}
 
 
 	//Parcelable Stuff

@@ -20,13 +20,13 @@ public class EventTableDbHelper extends SQLiteOpenHelper {
 	}
 
 	public void onCreate(SQLiteDatabase db) {
-		db.execSQL(EventsContract.SQL_CREATE_EVENTS);
+		db.execSQL(EventContract.SQL_CREATE_EVENTS);
 	}
 
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 		// This database is only a cache for online data, so its upgrade policy is
 		// to simply to discard the data and start over
-		db.execSQL(EventsContract.SQL_DELETE_EVENTS);
+		db.execSQL(EventContract.SQL_DELETE_EVENTS);
 		onCreate(db);
 	}
 

@@ -13,15 +13,33 @@
     <string name="seek_notifications">Notifications</string>
     <string name="seek_system">System</string>
 
+    <string name="expand_ringtone">R</string>
+    <string name="expand_media">M</string>
+    <string name="expand_notifications">N</string>
+    <string name="expand_system">S</string>
+
     <!-- Check Box Titles -->
     <string name="check_silent">Silent Mode</string>
 
+    <!-- Days of Week Buttons -->
+    <string name="button_sun">Sun</string>
+    <string name="button_mon">Mon</string>
+    <string name="button_tue">Tue</string>
+    <string name="button_wed">Wed</string>
+    <string name="button_thu">Thu</string>
+    <string name="button_fri">Fri</string>
+    <string name="button_sat">Sat</string>
+
+
     <!-- Time -->
+    <string name="default_start_time">9:00AM</string>
+    <string name="default_end_time">5:00PM</string>
+    <string name="default_volumes">Volumes</string>
     <string name="between_times">to</string>
     <string name="label_start">Start</string>
     <string name="label_end">End</string>
-    <string name="default_start">Monday 9:00 AM</string>
-    <string name="default_end">Monday 5:00 PM</string>
+    <string name="default_start">9:00 AM</string>
+    <string name="default_end">5:00 PM</string>
 
     <!-- Button Titles -->
     <string name="button_set">Set</string>

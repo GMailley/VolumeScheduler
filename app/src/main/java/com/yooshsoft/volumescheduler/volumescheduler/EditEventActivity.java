@@ -19,19 +19,17 @@ import android.widget.CheckBox;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.TimePicker;
-import android.widget.Toast;
 
 import com.yooshsoft.volumescheduler.R;
 import com.yooshsoft.volumescheduler.structures.EventTime;
 import com.yooshsoft.volumescheduler.structures.ScheduleEvent;
 import com.yooshsoft.volumescheduler.structures.VolumeSettings;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 
-public class CreateEventActivity extends AppCompatActivity
-{
-	public static final String EVENTS = "EVENTS";
+public class EditEventActivity extends AppCompatActivity
+{;
+	public static final String EVENT = "EVENT";
 
 	protected static final int START_TIME_CODE = 1;
 	protected static final int END_TIME_CODE = 2;
@@ -51,15 +49,8 @@ public class CreateEventActivity extends AppCompatActivity
 
 	protected CheckBox vSilent;
 
-	protected TextView vSun;
-	protected TextView vMon;
-	protected TextView vTue;
-	protected TextView vWed;
-	protected TextView vThu;
-	protected TextView vFri;
-	protected TextView vSat;
-
 	//Data
+	protected int dEventId;
 	protected EventTime dStart;
 	protected EventTime dEnd;
 	protected int dRing;
@@ -67,7 +58,6 @@ public class CreateEventActivity extends AppCompatActivity
 	protected int dNotif;
 	protected int dSystem;
 	protected int dRingMode;
-	protected boolean[] dDays = {false, false, false, false, false, false, false};
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -93,7 +83,7 @@ public class CreateEventActivity extends AppCompatActivity
 				this.dStart = new EventTime(1, hour, min);
 				this.vStart.setText(this.dStart.toString());
 			} else if (requestCode == END_TIME_CODE) {
-				hour = data.getIntExtra(TIMEPICKER_HOUR, 17);
+				hour = data.getIntExtra(TIMEPICKER_HOUR, 9);
 				min = data.getIntExtra(TIMEPICKER_MIN, 0);
 				this.dEnd = new EventTime(1, hour, min);
 				this.vEnd.setText(this.dEnd.toString());
@@ -123,28 +113,24 @@ public class CreateEventActivity extends AppCompatActivity
 
 		this.vSilent = (CheckBox) findViewById(R.id.check_silent);
 
-		this.vSun = (TextView) findViewById(R.id.button_sun);
-		this.vMon = (TextView) findViewById(R.id.button_mon);
-		this.vTue = (TextView) findViewById(R.id.button_tue);
-		this.vWed = (TextView) findViewById(R.id.button_wed);
-		this.vThu = (TextView) findViewById(R.id.button_thu);
-		this.vFri = (TextView) findViewById(R.id.button_fri);
-		this.vSat = (TextView) findViewById(R.id.button_sat);
+		((ViewManager)findViewById(R.id.day_bar).getParent()).removeView(findViewById(R.id.day_bar));
 	}
 
 	private void init_data()
 	{
-		Calendar c;
+		ScheduleEvent event;
 
-		this.dRing = 0;
-		this.dMedia = 0;
-		this.dNotif = 0;
-		this.dSystem = 0;
-		this.dRingMode = 0;
+		event = this.getIntent().getParcelableExtra(EVENT);
 
-		c = Calendar.getInstance();
-		this.dStart = new EventTime(c.get(Calendar.DAY_OF_WEEK), 9, 0);
-		this.dEnd = new EventTime(c.get(Calendar.DAY_OF_WEEK), 17, 0);
+		this.dEventId = event.getId();
+		this.dRing = event.getVolumes().getRingtone();
+		this.dMedia = event.getVolumes().getMedia();
+		this.dNotif = event.getVolumes().getNotifications();
+		this.dSystem = event.getVolumes().getSystem();
+		this.dRingMode = event.getVolumes().getRingMode();
+
+		this.dStart = new EventTime(event.getStartDay(), event.getStartHour(), event.getStartDay());
+		this.dEnd = new EventTime(event.getEndDay(), event.getEndHour(), event.getEndDay());
 	}
 
 	//Needs init_views
@@ -280,9 +266,9 @@ public class CreateEventActivity extends AppCompatActivity
 			{
 				@Override
 				public void onClick(View v) {
+					ScheduleEvent event;
 					int vol1, vol2, vol3, vol4;
 					Intent intent;
-					ArrayList<ScheduleEvent> events = new ArrayList<>();
 
 					vol1 = vRing.getProgress();
 					vol2 = vMedia.getProgress();
@@ -293,48 +279,28 @@ public class CreateEventActivity extends AppCompatActivity
 						vol1 = -1;
 					}
 
-					for(int i=0; i<dDays.length; i++)
-					{
-						int end = i;
-						if(dStart.compareTo(dEnd) > 0)
-						{
-							end++;
-							if(end == 8)
-							{
-								end = 1;
-							}
-						}
-						if(dDays[i])
-						{
-							events.add( new ScheduleEvent(
-								i+1,
-								dStart.getHour(),
-								dStart.getMin(),
-								end,
-								dEnd.getHour(),
-								dEnd.getMin(),
-								new VolumeSettings(
-									vol1,
-									vol2,
-									vol3,
-									vol4
-								)
-							));
-						}
-					}
+					event = new ScheduleEvent(
+						dStart.getDay(),
+						dStart.getHour(),
+						dStart.getMin(),
+						dEnd.getDay(),
+						dEnd.getHour(),
+						dEnd.getMin(),
+						new VolumeSettings(
+							vol1,
+							vol2,
+							vol3,
+							vol4
+						)
+					);
 
-					if(events.size() <= 0)
-					{
-						Toast.makeText(getApplicationContext(), "At least one day must be chosen", Toast.LENGTH_SHORT).show();
-					}
-					else
-					{
-						intent = new Intent();
-						intent.putExtra(EVENTS, events);
+					event.setId(dEventId);
 
-						setResult(RESULT_OK, intent);
-						finish();
-					}
+					intent = new Intent();
+					intent.putExtra(EVENT, event);
+
+					setResult(RESULT_OK, intent);
+					finish();
 				}
 			}
 		);
@@ -346,160 +312,6 @@ public class CreateEventActivity extends AppCompatActivity
 				public void onClick(View v) {
 					setResult(RESULT_CANCELED);
 					finish();
-				}
-			}
-		);
-
-		this.vSun.setOnClickListener(
-			new View.OnClickListener()
-			{
-				@Override
-				public void onClick(View v) {
-					dDays[0] = !dDays[0];
-					if(dDays[0])
-					{
-						SpannableString content = new SpannableString(vSun.getText());
-						content.setSpan(new UnderlineSpan(), 0, content.length(), 0);
-						vSun.setText(content);
-						Toast.makeText(getApplicationContext(), "Enabled", Toast.LENGTH_SHORT).show();
-					}
-					else
-					{
-						Toast.makeText(getApplicationContext(), "Disabled", Toast.LENGTH_SHORT).show();
-						vSun.setText(vSun.getText().toString());
-					}
-				}
-			}
-		);
-
-		this.vMon.setOnClickListener(
-			new View.OnClickListener()
-			{
-				@Override
-				public void onClick(View v) {
-					dDays[1] = !dDays[1];
-					if(dDays[1])
-					{
-						SpannableString content = new SpannableString(vMon.getText());
-						content.setSpan(new UnderlineSpan(), 0, content.length(), 0);
-						vMon.setText(content);
-						Toast.makeText(getApplicationContext(), "Enabled", Toast.LENGTH_SHORT).show();
-					}
-					else
-					{
-						Toast.makeText(getApplicationContext(), "Disabled", Toast.LENGTH_SHORT).show();
-						vMon.setText(vMon.getText().toString());
-					}
-				}
-			}
-		);
-
-		this.vTue.setOnClickListener(
-			new View.OnClickListener()
-			{
-				@Override
-				public void onClick(View v) {
-					dDays[2] = !dDays[2];
-					if(dDays[2])
-					{
-						SpannableString content = new SpannableString(vTue.getText());
-						content.setSpan(new UnderlineSpan(), 0, content.length(), 0);
-						vTue.setText(content);
-						Toast.makeText(getApplicationContext(), "Enabled", Toast.LENGTH_SHORT).show();
-					}
-					else
-					{
-						Toast.makeText(getApplicationContext(), "Disabled", Toast.LENGTH_SHORT).show();
-						vTue.setText(vTue.getText().toString());
-					}
-				}
-			}
-		);
-
-		this.vWed.setOnClickListener(
-			new View.OnClickListener()
-			{
-				@Override
-				public void onClick(View v) {
-					dDays[3] = !dDays[3];
-					if(dDays[3])
-					{
-						SpannableString content = new SpannableString(vWed.getText());
-						content.setSpan(new UnderlineSpan(), 0, content.length(), 0);
-						vWed.setText(content);
-						Toast.makeText(getApplicationContext(), "Enabled", Toast.LENGTH_SHORT).show();
-					}
-					else
-					{
-						Toast.makeText(getApplicationContext(), "Disabled", Toast.LENGTH_SHORT).show();
-						vWed.setText(vWed.getText().toString());
-					}
-				}
-			}
-		);
-
-		this.vThu.setOnClickListener(
-			new View.OnClickListener()
-			{
-				@Override
-				public void onClick(View v) {
-					dDays[4] = !dDays[4];
-					if(dDays[4])
-					{
-						SpannableString content = new SpannableString(vThu.getText());
-						content.setSpan(new UnderlineSpan(), 0, content.length(), 0);
-						vThu.setText(content);
-						Toast.makeText(getApplicationContext(), "Enabled", Toast.LENGTH_SHORT).show();
-					}
-					else
-					{
-						Toast.makeText(getApplicationContext(), "Disabled", Toast.LENGTH_SHORT).show();
-						vThu.setText(vThu.getText().toString());
-					}
-				}
-			}
-		);
-
-		this.vFri.setOnClickListener(
-			new View.OnClickListener()
-			{
-				@Override
-				public void onClick(View v) {
-					dDays[5] = !dDays[5];
-					if(dDays[5])
-					{
-						SpannableString content = new SpannableString(vFri.getText());
-						content.setSpan(new UnderlineSpan(), 0, content.length(), 0);
-						vFri.setText(content);
-						Toast.makeText(getApplicationContext(), "Enabled", Toast.LENGTH_SHORT).show();
-					}
-					else
-					{
-						Toast.makeText(getApplicationContext(), "Disabled", Toast.LENGTH_SHORT).show();
-						vFri.setText(vFri.getText().toString());
-					}
-				}
-			}
-		);
-
-		this.vSat.setOnClickListener(
-			new View.OnClickListener()
-			{
-				@Override
-				public void onClick(View v) {
-					dDays[6] = !dDays[6];
-					if(dDays[6])
-					{
-						SpannableString content = new SpannableString(vSat.getText());
-						content.setSpan(new UnderlineSpan(), 0, content.length(), 0);
-						vSat.setText(content);
-						Toast.makeText(getApplicationContext(), "Enabled", Toast.LENGTH_SHORT).show();
-					}
-					else
-					{
-						Toast.makeText(getApplicationContext(), "Disabled", Toast.LENGTH_SHORT).show();
-						vSat.setText(vSat.getText().toString());
-					}
 				}
 			}
 		);

@@ -1,189 +1,228 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:paddingBottom="20dp"
-    android:paddingLeft="10dp"
-    android:paddingRight="10dp"
-    android:paddingTop="20dp">
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="#6b6b6b"
+              android:orientation="vertical"
+              android:paddingBottom="20dp"
+              android:paddingLeft="10dp"
+              android:paddingRight="10dp"
+              android:paddingTop="20dp"
+    >
+
+    <RelativeLayout
+        style="@style/volume_activity_element"
+        android:layout_marginEnd="10dp"
+        android:layout_marginStart="10dp"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/button_start"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:paddingBottom="6dp"
+            android:paddingEnd="10dp"
+            android:paddingStart="10dp"
+            android:paddingTop="6dp"
+            android:text="@string/default_start"
+            android:textColor="#ededed"
+            android:textSize="32sp"/>
+
+        <TextView
+            android:id="@+id/button_end"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:onClick="showTimePickerEnd"
+            android:paddingBottom="6dp"
+            android:paddingEnd="10dp"
+            android:paddingStart="10dp"
+            android:paddingTop="6dp"
+            android:text="@string/default_end"
+            android:textColor="#ededed"
+            android:textSize="32sp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/button_start"
+            android:layout_alignParentEnd="false"
+            android:layout_alignParentStart="false"
+            android:layout_toLeftOf="@id/button_end"
+            android:layout_toRightOf="@id/button_start"
+            android:gravity="center_horizontal"
+            android:paddingBottom="6dp"
+            android:text="@string/between_times"
+            android:textColor="#ededed"
+            android:textSize="24sp"/>
+
+    </RelativeLayout>
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
-        android:orientation="vertical" >
+        android:id="@+id/day_bar"
+        style="@style/volume_activity_element"
+        android:layout_marginBottom="12dp"
+        android:layout_marginTop="12dp"
+        android:orientation="horizontal">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp"
-            android:gravity="center_horizontal"
-            android:orientation="horizontal" >
+        <TextView
+            android:id="@+id/button_sun"
+            style="@style/day_of_week_button"
+            android:text="@string/button_sun"/>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start"
-                android:paddingStart="10dp"
-                android:paddingEnd="10dp"
-                android:paddingTop="6dp"
-                android:paddingBottom="6dp"
-                android:text="@string/label_start"
-                android:textColor="#636363"
-                android:textSize="20sp" />
+        <TextView
+            android:id="@+id/button_mon"
+            style="@style/day_of_week_button"
+            android:text="@string/button_mon"/>
 
-            <Button
-                android:id="@+id/button_start"
-                android:layout_width="200dp"
-                android:layout_height="35dp"
-                android:paddingStart="10dp"
-                android:paddingEnd="10dp"
-                android:paddingTop="6dp"
-                android:paddingBottom="6dp"
-                android:onClick="showTimePickerStart"
-                android:text="@string/default_start"
-                android:textColor="#636363" />
-        </LinearLayout>
+        <TextView
+            android:id="@+id/button_tue"
+            style="@style/day_of_week_button"
+            android:text="@string/button_tue"/>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingStart="10dp"
-            android:paddingEnd="10dp"
-            android:gravity="center_horizontal"
-            android:orientation="horizontal" >
+        <TextView
+            android:id="@+id/button_wed"
+            style="@style/day_of_week_button"
+            android:text="@string/button_wed"/>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingStart="10dp"
-                android:paddingEnd="10dp"
-                android:paddingTop="6dp"
-                android:paddingBottom="6dp"
-                android:text="@string/label_end"
-                android:textColor="#636363"
-                android:textSize="20sp" />
+        <TextView
+            android:id="@+id/button_thu"
+            style="@style/day_of_week_button"
+            android:text="@string/button_thu"/>
 
-            <Button
-                android:id="@+id/button_end"
-                android:layout_width="200dp"
-                android:layout_height="35dp"
-                android:paddingStart="10dp"
-                android:paddingEnd="10dp"
-                android:paddingTop="6dp"
-                android:paddingBottom="6dp"
-                android:onClick="showTimePickerEnd"
-                android:text="@string/default_end"
-                android:textColor="#636363" />
-        </LinearLayout>
+        <TextView
+            android:id="@+id/button_fri"
+            style="@style/day_of_week_button"
+            android:text="@string/button_fri"/>
+
+        <TextView
+            android:id="@+id/button_sat"
+            style="@style/day_of_week_button"
+            android:text="@string/button_sat"/>
+
     </LinearLayout>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingStart="10dp"
-        android:paddingEnd="10dp"
-        android:layout_marginTop="8dp"
-        android:text="@string/seek_ringtone"
-        android:textColor="#636363"
-        android:textSize="20sp" />
+    <RelativeLayout
+        style="@style/volume_activity_element">
 
-    <SeekBar
-        android:id="@+id/seek_ringtone"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="5dp" />
+        <TextView
+            android:id="@+id/icon_ringtone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:drawableStart="@drawable/ic_audio_ring_notif_am"
+            android:paddingEnd="10dp"
+            android:paddingStart="10dp"
+            android:textColor="#636363"/>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:paddingStart="10dp"
-        android:paddingEnd="10dp"
-        android:text="@string/seek_media"
-        android:textColor="#636363"
-        android:textSize="20sp" />
+        <SeekBar
+            android:id="@+id/seek_ringtone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/icon_ringtone"/>
 
-    <SeekBar
-        android:id="@+id/seek_media"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="5dp"/>
+    </RelativeLayout>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:paddingStart="10dp"
-        android:paddingEnd="10dp"
-        android:text="@string/seek_notifications"
-        android:textColor="#636363"
-        android:textSize="20sp" />
+    <RelativeLayout
+        style="@style/volume_activity_element">
 
-    <SeekBar
-        android:id="@+id/seek_notifications"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="5dp" />
+        <TextView
+            android:id="@+id/icon_media"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:drawableStart="@drawable/ic_audio_vol_am"
+            android:paddingEnd="10dp"
+            android:paddingStart="10dp"
+            android:textColor="#636363"/>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:paddingStart="10dp"
-        android:paddingEnd="10dp"
-        android:text="@string/seek_system"
-        android:textColor="#636363"
-        android:textSize="20sp" />
+        <SeekBar
+            android:id="@+id/seek_media"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/icon_media"/>
 
-    <SeekBar
-        android:id="@+id/seek_system"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="5dp" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        style="@style/volume_activity_element">
+
+        <TextView
+            android:id="@+id/icon_notif"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:drawableStart="@drawable/ic_audio_notification_am"
+            android:paddingEnd="10dp"
+            android:paddingStart="10dp"
+            android:textColor="#636363"/>
+
+        <SeekBar
+            android:id="@+id/seek_notif"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/icon_notif"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        style="@style/volume_activity_element">
+
+        <TextView
+            android:id="@+id/icon_system"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:drawableStart="@drawable/ic_audio_ring_notif_am"
+            android:paddingEnd="10dp"
+            android:paddingStart="10dp"
+            android:textColor="#636363"/>
+
+        <SeekBar
+            android:id="@+id/seek_system"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/icon_system"/>
+
+    </RelativeLayout>
 
     <CheckBox
         android:id="@+id/check_silent"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/volume_activity_element"
         android:layout_gravity="start"
         android:layout_marginBottom="5dp"
         android:layout_marginTop="5dp"
-        android:text="@string/check_silent"
-        android:textColor="#636363"
         android:checked="false"
-        android:onClick="onCheckboxClicked"/>
+        android:onClick="onCheckboxClicked"
+        android:text="@string/check_silent"
+        android:textColor="#ededed"/>
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        style="@style/volume_activity_element"
+        android:layout_marginTop="16dp"
         android:gravity="center_horizontal"
         android:orientation="horizontal"
-        android:layout_marginTop="16dp"
         android:paddingLeft="10dp"
-        android:paddingRight="10dp" >
+        android:paddingRight="10dp">
 
         <Button
             android:id="@+id/button_set"
             android:layout_width="90dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
+            android:layout_marginStart="10dp"
             android:text="@string/button_set"
-            android:textColor="#636363"
-            android:onClick="submitEvent"/>
+            android:textColor="#ededed"/>
 
         <Button
             android:id="@+id/button_cancel"
             android:layout_width="90dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
+            android:layout_marginStart="10dp"
             android:text="@string/button_cancel"
-            android:textColor="#636363"
-            android:onClick="cancelEvent" />
+            android:textColor="#ededed"/>
     </LinearLayout>
 
 </LinearLayout>

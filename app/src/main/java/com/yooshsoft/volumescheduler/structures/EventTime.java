@@ -8,7 +8,6 @@ import android.os.Parcelable;
  */
 public class EventTime implements Comparable<EventTime>, Parcelable{
 	protected int time;
-	
 
 	public EventTime(int day, int hour, int min)
 	{
